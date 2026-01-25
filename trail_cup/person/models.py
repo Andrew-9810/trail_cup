@@ -16,9 +16,7 @@ class Person(models.Model):
     name = models.CharField(max_length=30)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MAN)
     birthday = models.DateField()
-    keys = models.CharField(
-        max_length=64, default=f'{surname}{name}{birthday}', blank=True
-    )
+
 
 class TitleGroup(models.Model):
     """Заголовки групп."""
@@ -56,6 +54,6 @@ class Result(models.Model):
     run = models.ForeignKey(Run, on_delete=models.PROTECT)
     person = models.ForeignKey(Person, on_delete=models.PROTECT)
     result_place = models.IntegerField()
-    result_time = models.DateTimeField()
-    distance = models.IntegerField(default=0)
+    result_time = models.IntegerField(verbose_name='Время забега')
+    distance = models.FloatField()
     group = models.ForeignKey(Group, on_delete=models.PROTECT, default=1)

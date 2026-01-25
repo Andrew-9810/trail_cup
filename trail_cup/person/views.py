@@ -25,24 +25,59 @@ def read_csv(path):
             persons.append(data)
     return persons
 
+
+def add_simbol_zero(arg):
+    """Добавляет ноль в начало строки если в строке один символ."""
+    data = str(arg)
+    if len(data) < 2:
+        return data.zfill(2)
+    elif len(data) == 2:
+        return data
+    else:
+        raise ValueError("Получил число больше 2х символов")
+
+
+def converter_time(arg):
+    """Преобразовывает время в число секунд, и наоборот."""
+    hour_sec = 60 * 60
+    minute_sec = 60
+    if isinstance(arg, str):
+        hour, minute, second = arg.split(':')
+        result = int(hour) * hour_sec + int(minute) * minute_sec + int(second)
+    elif isinstance(arg, int):
+        hour = arg // hour_sec
+        remaining_minutes = arg - hour * hour_sec
+        minute = remaining_minutes // minute_sec
+        remaining_seconds = remaining_minutes - minute * minute_sec
+        res = list()
+        for i in [hour, minute, remaining_seconds]:
+            res.append(add_simbol_zero(i))
+        result = f'{res[0]}:{res[1]}:{res[2]}'
+    else:
+        raise ValueError("Должен получить либо строку либо число!")
+    return result
+
+
+
+
 def parce_csv(file):
     """Берет строчку файла и записывает ее в БД."""
-    for i in file:
-        fi = i[NAME].split()
+    for line in file:
+        fi = line[NAME].split()
         person = Person.objects.create(
             surname = fi[0],
             name = fi[1],
-            gender = i[GENDER],
-            birthday = f'{i[YEAR]}-01-01'
+            gender = line[GENDER],
+            birthday = f'{line[YEAR]}-01-01'
         )
         run = Run.objects.get(id=1)
         group = Group.objects.get(id=1)
         Result.objects.create(
             run = run,
             person = person,
-            result_place = i[RES_PLACE],
-            result_time = i[RES_TIME], #['“1:37:09” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ] format.']
-            distance = i[DISTANCE],
+            result_place = line[RES_PLACE],
+            result_time = converter_time(line[RES_TIME]),
+            distance = line[DISTANCE],
             group = group
 
         )

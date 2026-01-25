@@ -1,5 +1,3 @@
-from tokenize import group
-
 from django.test import TestCase
 from person.models import Season, Run, Result, Person, Group, TitleGroup
 

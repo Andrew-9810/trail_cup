@@ -1,5 +1,5 @@
 from django.test import TestCase
-from person.views import converter_time, add_simbol_zero
+from person.module import converter_time, add_simbol_zero
 
 
 class FuncTest(TestCase):

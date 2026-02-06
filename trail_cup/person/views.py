@@ -47,7 +47,7 @@ def parce_csv(path_csv, run_id):
         run = Run.objects.get(id=run_id)
         for line in file_csv:
             fi = line[NAME].split()
-            person = Person.objects.create(
+            person, _ = Person.objects.get_or_create(
                 surname = fi[0],
                 name = fi[1],
                 gender = line[GENDER],

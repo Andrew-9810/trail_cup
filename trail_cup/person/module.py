@@ -1,6 +1,6 @@
 import csv
 
-from person.models import Result, Person
+from person.models import Result, Person, Group
 
 NAME = 0
 YEAR = 1
@@ -66,3 +66,13 @@ def get_result(group:int, run:list):
             person_set.add(pers.person) # получаю pk по которому выведу ФИ
         result_list.append(result)
     return result_list
+
+def defining_group(gender: str, birthday: str, season: int):
+    """Определение группы по году рождения и полу."""
+    group = Group.objects.filter(season=season, gender=gender,
+        year_max__lte=birthday, year_min__gte = birthday
+    )
+    if len(group) == 1:
+        return group[0]
+    else:
+        return False

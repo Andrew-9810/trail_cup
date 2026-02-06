@@ -25,10 +25,14 @@ class TitleGroup(models.Model):
 
 class Group(models.Model):
     """Группы участников."""
+    MAN = 'M'
+    WOMAN = 'D'
+    GENDER_CHOICES = [(MAN, 'M'), (WOMAN, 'Ж')]
     season = models.ForeignKey(Season, on_delete=models.PROTECT, default=1900)
     title = models.ForeignKey(TitleGroup, on_delete=models.PROTECT)
     year_max = models.DateField()
     year_min = models.DateField()
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MAN)
 
 class Scores(models.Model):
     """Очки за результат."""

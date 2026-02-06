@@ -7,7 +7,7 @@ from django.conf import settings
 
 from .module import (
     NAME, YEAR, RES_TIME, RES_PLACE, DISTANCE, GENDER, read_csv, converter_time,
-    get_result
+    get_result, defining_group
 )
 from .forms import LoadCsvForm
 
@@ -44,6 +44,7 @@ def parce_csv(path_csv, run_id):
     """Берет строчку файла и записывает ее в БД."""
     try:
         file_csv = read_csv(path_csv)
+        run = Run.objects.get(id=run_id)
         for line in file_csv:
             fi = line[NAME].split()
             person = Person.objects.create(
@@ -52,16 +53,20 @@ def parce_csv(path_csv, run_id):
                 gender = line[GENDER],
                 birthday = f'{line[YEAR]}-01-01'
             )
-            run = Run.objects.get(id=run_id)
-            group = Group.objects.get(id=1)
+            group_obj = defining_group(
+                    gender=line[GENDER],
+                    birthday=f'{line[YEAR]}-01-01',
+                    season=run.season.id
+            )
+            if not group_obj:
+                continue
             Result.objects.create(
                 run = run,
                 person = person,
                 result_place = line[RES_PLACE],
                 result_time = converter_time(line[RES_TIME]),
                 distance = line[DISTANCE],
-                group = group
-
+                group = group_obj
             )
         return True
     except Exception as err:

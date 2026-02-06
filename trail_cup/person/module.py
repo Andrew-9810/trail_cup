@@ -1,5 +1,6 @@
 import csv
 
+from person.models import Result, Person
 
 NAME = 0
 YEAR = 1
@@ -51,3 +52,17 @@ def converter_time(arg):
     else:
         raise ValueError("Должен получить либо строку либо число!")
     return result
+
+def get_result(group:int, run:list):
+    """Возвращает объект результата участников по группе."""
+    # Предполагается, что все участники по группе в единственном экземпляре
+    # События run должны иметь свойство опубликовано
+    person_set = set()
+    event_list = []
+    result_list = []
+    for event in run:
+        result = Result.objects.filter(run=event, group=group)
+        for pers in result:
+            person_set.add(pers.person) # получаю pk по которому выведу ФИ
+        result_list.append(result)
+    return result_list

@@ -1,15 +1,22 @@
-from .models import Result, Person, Run, Group
-
 from django.shortcuts import render
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.files import File
 from django.conf import settings
+from jinja2 import Environment, FileSystemLoader
 
+from .models import Result, Person, Run, Group
 from .module import (
     NAME, YEAR, RES_TIME, RES_PLACE, DISTANCE, GENDER, read_csv, converter_time,
     get_result, defining_group
 )
 from .forms import LoadCsvForm
+
+
+path_templates = f'{settings.BASE_DIR}\\person\\templates\\'
+environment = Environment(loader=FileSystemLoader(
+    path_templates
+))
+
 
 def load_csv(request):
     """Получить путь к файлу, получить объект мероприятия."""
@@ -91,5 +98,9 @@ def group(request):
                     main_dict[pers_id] = res[pers_id]
 
     context = {'res': main_dict}
-    return render(request, template_name='result.html', context=context)
+    template_name = environment.get_template('result.html')
+    results_filename = f'{path_templates}\\my_file.html'
+    with open(results_filename, mode="w", encoding="utf-8") as results:
+        results.write(template_name.render(context))
+    return render(request, template_name='good.html')
 

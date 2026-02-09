@@ -7,7 +7,7 @@
 <body>
 <table>
 
-{% for key, value in res.items %}
+{% for key, value in res.items() %}
     <tr>
         <td>{{ key }}|</td>
         {% for x in value %}

@@ -73,7 +73,23 @@ def parce_csv(path_csv, run_id):
         return err
 
 def group(request):
-    res = get_result(1,[1, 2])
-    print(res)
-    return None
+    """Получение результата по группе"""
+    gr = 1 # Запрос по 1 группе Тест
+    run = [1, 2] # Это будут опубликованные события
+    main_dict = {}
+
+    for index, i in enumerate(run):
+        res = get_result(gr, i)
+        if index == 0: # Первая итерация
+            # Сравнить ключи словаря если ключ совпадает то добавить событие по ключю, иначе добавить новый ключ
+            main_dict = res
+        else:
+            for pers_id in res.keys():
+                if pers_id in main_dict:
+                    main_dict[pers_id].append(res[pers_id][0])
+                else:
+                    main_dict[pers_id] = res[pers_id]
+
+    context = {'res': main_dict}
+    return render(request, template_name='result.html', context=context)
 

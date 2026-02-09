@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+
+{% for key, value in res.items %}
+    <tr>
+        <td>{{ key }}|</td>
+        {% for x in value %}
+            <td>{{ x.result_person.result_time }}</td>
+            <td>{{ x.result_person.result_place }}</td>
+            <td>баллы</td>
+            <td>{{ x.result_person.distance }}</td>
+            <td> | </td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+
+</table>
+</body>
+</html>

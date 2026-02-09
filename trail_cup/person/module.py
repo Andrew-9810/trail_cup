@@ -53,19 +53,15 @@ def converter_time(arg):
         raise ValueError("Должен получить либо строку либо число!")
     return result
 
-def get_result(group:int, run:list):
+def get_result(group:int, run:int):
     """Возвращает объект результата участников по группе."""
     # Предполагается, что все участники по группе в единственном экземпляре
     # События run должны иметь свойство опубликовано
-    person_set = set()
-    event_list = []
-    result_list = []
-    for event in run:
-        result = Result.objects.filter(run=event, group=group)
-        for pers in result:
-            person_set.add(pers.person) # получаю pk по которому выведу ФИ
-        result_list.append(result)
-    return result_list
+    person_result = {}
+    result = Result.objects.filter(group=group, run=run)
+    for res in result:
+        person_result[res.person_id] = [{'result_person': res}]
+    return person_result
 
 def defining_group(gender: str, birthday: str, season: int):
     """Определение группы по году рождения и полу."""

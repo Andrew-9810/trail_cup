@@ -5,6 +5,9 @@ class Season(models.Model):
     """Сезон забегов."""
     title = models.IntegerField()
 
+    def __str__(self):
+        return str(self.title)
+
 
 class Person(models.Model):
     """Участники."""
@@ -57,7 +60,6 @@ class Run(models.Model):
     )
 
 
-
 class Result(models.Model):
     """Результаты трейла."""
     run = models.ForeignKey(Run, on_delete=models.PROTECT)
@@ -66,3 +68,16 @@ class Result(models.Model):
     result_time = models.IntegerField(verbose_name='Время забега')
     distance = models.FloatField()
     group = models.ForeignKey(Group, on_delete=models.PROTECT, default=1)
+
+    def get_scores(self):
+        """Получение очков по занятому месту."""
+        season = self.group.season
+        scores = Scores.objects.filter(
+            season=season, result_place=self.result_place
+        )
+        if scores.exists():
+            self.scores = scores[0].scores
+        else:
+            self.scores = 0
+
+

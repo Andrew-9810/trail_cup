@@ -7,13 +7,13 @@
 <body>
 <table>
 
-{% for key, value in res.items() %}
+{% for person_id, races in main_dict.items() %}
     <tr>
-        <td>{{ key }}|</td>
-        {% for x in value %}
+        <td>{{ person_id }}|</td>
+        {% for x in races %}
             <td>{{ x.result_person.result_time }}</td>
             <td>{{ x.result_person.result_place }}</td>
-            <td>баллы</td>
+            <td>{{ x.result_person.scores }}</td>
             <td>{{ x.result_person.distance }}</td>
             <td> | </td>
         {% endfor %}

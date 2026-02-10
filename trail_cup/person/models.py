@@ -79,5 +79,3 @@ class Result(models.Model):
             self.scores = scores[0].scores
         else:
             self.scores = 0
-
-

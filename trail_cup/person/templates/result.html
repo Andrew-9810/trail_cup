@@ -12,7 +12,7 @@
         <td>{{ races.person_surname }} {{ races.person_name }}</td>
         <td>{{ races.sum_scores }}</td>
         <td>{{ races.sum_distance }}</td>
-
+        <td>{{ races.count_res_pers }}</td>
         {% for result in races.result_person %}
             <td>{{ result.result_person.result_time }}</td>
             <td>{{ result.result_person.result_place }}</td>

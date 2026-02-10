@@ -108,6 +108,7 @@ def group(request):
                 'person_name': person.name,
                 'person_surname': person.surname,
                 'result_person': result_person[person_id],
+                'count_res_pers': len(result_person[person_id]),
                 'sum_scores': sum_scores[person_id],
                 'sum_distance': sum_distance[person_id]
             }

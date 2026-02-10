@@ -82,26 +82,43 @@ def parce_csv(path_csv, run_id):
 def group(request):
     """Получение результата по группе"""
     gr = 1 # Запрос по 1 группе Тест
-    run = [1, 2] # Это будут опубликованные события
-
+    races = [1, 2] # Это будут опубликованные события
     main_dict = {}
-    for index, i in enumerate(run):
-        res = get_result(gr, i)
-
-        if index == 0: # Первая итерация
-            # Сравнить ключи словаря если ключ совпадает то добавить событие по ключю, иначе добавить новый ключ
-            main_dict = res
-        else:
-            for person_id in res.keys():
-                if person_id in main_dict:
-                    main_dict[person_id].append(res[person_id][0])
-                else:
-                    main_dict[person_id] = res[person_id]
-
-    context = {'main_dict': main_dict}
+    result_person = {}
+    sum_scores = {}
+    sum_distance = {}
+    for run in races:
+        res = get_result(gr, run)
+        for person_id in res.keys():
+            if person_id in result_person:
+                result_person[person_id].append(res[person_id][0])
+                sum_scores[person_id] += res[person_id][0]['result_person'].scores
+                sum_distance[person_id] += res[person_id][0]['result_person'].distance
+            else:
+                result_person[person_id] = res[person_id]
+                sum_scores[person_id] = res[person_id][0]['result_person'].scores
+                sum_distance[person_id] = res[person_id][0]['result_person'].distance
+    if (result_person.keys() == sum_scores.keys()
+            and result_person.keys() == sum_distance.keys()
+    ):
+        for person_id in result_person.keys():
+            main_dict[person_id] = {
+                'result_person': result_person[person_id],
+                'sum_scores': sum_scores[person_id],
+                'sum_distance': sum_distance[person_id]
+            }
+    else:
+        return render(
+            request, template_name='good.html', context={
+                'mess': 'error - не совпадают дист. очки и кол-во участников'
+            }
+        )
+    context = {
+        'main_dict': main_dict,
+    }
     template_name = environment.get_template('result.html')
     results_filename = f'{path_templates}\\my_file.html'
     with open(results_filename, mode="w", encoding="utf-8") as results:
         results.write(template_name.render(context))
-    return render(request, template_name='good.html')
+    return render(request, context={'mess': 'good'}, template_name='good.html')
 

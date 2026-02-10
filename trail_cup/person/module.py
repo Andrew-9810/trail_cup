@@ -60,6 +60,8 @@ def get_result(group:int, run:int):
     person_result = {}
     result = Result.objects.filter(group=group, run=run)
     for res in result:
+        res_time = converter_time(res.result_time)
+        res.result_time = res_time
         res.get_scores()
         person_result[res.person_id] = [{'result_person': res}]
     return person_result

@@ -41,7 +41,7 @@ class Scores(models.Model):
     """Очки за результат."""
     season = models.ForeignKey(Season, on_delete=models.PROTECT, default=1900)
     result_place = models.IntegerField()
-    scores = models.IntegerField()
+    scores = models.FloatField()
 
 
 class Run(models.Model):

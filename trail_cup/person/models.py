@@ -52,6 +52,11 @@ class Run(models.Model):
         max_length=4, choices=TYPE_CHOICES, default=DAY
     )
     data_run = models.DateField()
+    is_published = models.BooleanField(
+        verbose_name='Опубликовано', default=False
+    )
+
+
 
 class Result(models.Model):
     """Результаты трейла."""

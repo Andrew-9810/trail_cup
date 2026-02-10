@@ -9,9 +9,9 @@
 
 {% for person_id, races in main_dict.items() %}
     <tr>
-        <td>{{ person_id }}|</td>
-        <td>{{ races.sum_scores }}|</td>
-        <td>{{ races.sum_distance }}|</td>
+        <td>{{ races.person_surname }} {{ races.person_name }}</td>
+        <td>{{ races.sum_scores }}</td>
+        <td>{{ races.sum_distance }}</td>
 
         {% for result in races.result_person %}
             <td>{{ result.result_person.result_time }}</td>

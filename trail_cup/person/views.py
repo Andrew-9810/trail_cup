@@ -83,6 +83,7 @@ def group(request):
     """Получение результата по группе"""
     gr = 1 # Запрос по 1 группе Тест
     races = [1, 2] # Это будут опубликованные события
+
     main_dict = {}
     result_person = {}
     sum_scores = {}
@@ -102,7 +103,10 @@ def group(request):
             and result_person.keys() == sum_distance.keys()
     ):
         for person_id in result_person.keys():
+            person = Person.objects.get(id=person_id)
             main_dict[person_id] = {
+                'person_name': person.name,
+                'person_surname': person.surname,
                 'result_person': result_person[person_id],
                 'sum_scores': sum_scores[person_id],
                 'sum_distance': sum_distance[person_id]
@@ -120,5 +124,6 @@ def group(request):
     results_filename = f'{path_templates}\\my_file.html'
     with open(results_filename, mode="w", encoding="utf-8") as results:
         results.write(template_name.render(context))
+
     return render(request, context={'mess': 'good'}, template_name='good.html')
 

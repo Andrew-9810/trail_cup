@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from .models import Result, Person, Run, Season, Group
 from .module import (
     NAME, YEAR, RES_TIME, RES_PLACE, DISTANCE, GENDER, read_csv, converter_time,
-    get_result, defining_group
+    get_result, defining_group, sort_result
 )
 from .forms import LoadCsvForm
 
@@ -91,15 +91,21 @@ def group(request, group_id: int):
         for person_id in res.keys():
             if person_id in result_person:
                 result_person[person_id].append(res[person_id][0])
-                sum_scores[person_id] += res[person_id][0]['result_person'].scores
+                calculated_scores = (
+                    res[person_id][0]['result_person'].place_scores +
+                    res[person_id][0]['result_person'].distance
+                )
+                sum_scores[person_id] += calculated_scores
                 sum_distance[person_id] += res[person_id][0]['result_person'].distance
             else:
                 result_person[person_id] = res[person_id]
-                sum_scores[person_id] = res[person_id][0]['result_person'].scores
+                calculated_scores = (
+                    res[person_id][0]['result_person'].place_scores +
+                    res[person_id][0]['result_person'].distance
+                )
+                sum_scores[person_id] = calculated_scores
                 sum_distance[person_id] = res[person_id][0]['result_person'].distance
-    if (result_person.keys() == sum_scores.keys()
-            and result_person.keys() == sum_distance.keys()
-    ):
+    if result_person.keys() == sum_scores.keys() == sum_distance.keys():
         for person_id in result_person.keys():
             person = Person.objects.get(id=person_id)
             main_dict[person_id] = {
@@ -116,6 +122,7 @@ def group(request, group_id: int):
                 'mess': 'error - не совпадают дист. очки и кол-во участников'
             }
         )
+    main_dict = sort_result(main_dict, reverce=True)
     context = {
         'main_dict': main_dict,
     }

@@ -75,3 +75,16 @@ def defining_group(gender: str, birthday: str, season: int):
         return group[0]
     else:
         return False
+
+def sort_result(value: dict, reverce: bool = False) -> dict:
+    """Сортировка"""
+    result = dict(sorted(
+        value.items(),
+        key=lambda item: (
+            item[1]['sum_scores'],
+            item[1]['sum_distance'],
+            item[1]['count_res_pers']
+        ),
+        reverse=reverce
+    ))
+    return result

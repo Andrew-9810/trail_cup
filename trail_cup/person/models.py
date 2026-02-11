@@ -76,6 +76,6 @@ class Result(models.Model):
             season=season, result_place=self.result_place
         )
         if scores.exists():
-            self.scores = scores[0].scores
+            self.place_scores = scores[0].scores
         else:
-            self.scores = 0
+            self.place_scores = 0

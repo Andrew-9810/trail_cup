@@ -81,14 +81,13 @@ def parce_csv(path_csv, run_id):
 
 def group(request, group_id: int):
     """Получение результата по группе"""
-    races = [1, 2] # Это будут опубликованные события
-
+    races = Run.objects.filter(is_published=True)
     main_dict = {}
     result_person = {}
     sum_scores = {}
     sum_distance = {}
     for run in races:
-        res = get_result(group_id, run)
+        res = get_result(group_id, run.id)
         for person_id in res.keys():
             if person_id in result_person:
                 result_person[person_id].append(res[person_id][0])

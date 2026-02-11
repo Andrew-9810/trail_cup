@@ -4,7 +4,7 @@ from django.core.files import File
 from django.conf import settings
 from jinja2 import Environment, FileSystemLoader
 
-from .models import Result, Person, Run, Group
+from .models import Result, Person, Run, Season, Group
 from .module import (
     NAME, YEAR, RES_TIME, RES_PLACE, DISTANCE, GENDER, read_csv, converter_time,
     get_result, defining_group
@@ -44,7 +44,7 @@ def load_csv(request):
     context = {
         'form': form
     }
-    return render(request, template_name='index.html', context=context)
+    return render(request, template_name='load_csv.html', context=context)
 
 
 def parce_csv(path_csv, run_id):
@@ -79,9 +79,8 @@ def parce_csv(path_csv, run_id):
     except Exception as err:
         return err
 
-def group(request):
+def group(request, group_id: int):
     """Получение результата по группе"""
-    gr = 1 # Запрос по 1 группе Тест
     races = [1, 2] # Это будут опубликованные события
 
     main_dict = {}
@@ -89,7 +88,7 @@ def group(request):
     sum_scores = {}
     sum_distance = {}
     for run in races:
-        res = get_result(gr, run)
+        res = get_result(group_id, run)
         for person_id in res.keys():
             if person_id in result_person:
                 result_person[person_id].append(res[person_id][0])
@@ -127,4 +126,19 @@ def group(request):
         results.write(template_name.render(context))
 
     return render(request, context={'mess': 'good'}, template_name='good.html')
+
+def index(request):
+    """Главная страница, выбор сезона"""
+    seasons = Season.objects.all()
+    return render(
+        request, context={'seasons': seasons}, template_name='index.html'
+    )
+
+
+def choice(request, season:int):
+    """Выбор группы по сезону."""
+    groups = Group.objects.filter(season_id=season)
+    return render(
+        request, context={'groups': groups}, template_name='choice_group.html'
+    )
 

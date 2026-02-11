@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Загрузка CSV</title>
+    <title>Title</title>
 </head>
 <body>
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Отправить">
-    </form>
+{% for season in seasons %}
+  <a href="{% url 'choice' season.id %}">{{ season }}</a>
+{% endfor %}
+
 </body>
 </html>

@@ -124,7 +124,7 @@ def group(request, group_id: int):
         )
     main_dict = sort_result(main_dict, reverce=True)
     context = {
-        'main_dict': main_dict,
+        'main_dict': main_dict, 'races': races
     }
     template_name = environment.get_template('result.html')
     results_filename = f'{path_templates}\\my_file.html'

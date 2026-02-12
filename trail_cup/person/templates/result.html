@@ -3,24 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+table {
+  border-collapse: collapse;
+  border: 2px solid rgb(140 140 140);
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+caption {
+  caption-side: bottom;
+  padding: 10px;
+  font-weight: bold;
+}
+
+thead,
+tfoot {
+  background-color: rgb(228 240 245);
+}
+
+th,
+td {
+  border: 1px solid rgb(160 160 160);
+  padding: 8px 10px;
+}
+
+td:last-of-type {
+  text-align: center;
+}
+
+tbody > tr:nth-of-type(even) {
+  background-color: rgb(237 238 242);
+}
+
+tfoot th {
+  text-align: right;
+}
+
+tfoot td {
+  font-weight: bold;
+}
+.empaty {
+  background-color: rgb(0 0 0);
+
+}
+
+    </style>
 </head>
 <body>
 <table>
+  <thead>
+    <tr>
+      <th style="text-align: left;" rowspan="2">Место</th>
+      <th style="text-align: left;" rowspan="2">Фамилия Имя</th>
+      <th rowspan="2">Общее количество баллов</th>
+      <th rowspan="2">Общее количество пройденных км</th>
+      <th rowspan="2">Количество пройденных этапов</th>
+      {% for race in races %}
+        <th class="empaty" scope="col"></th>
+        <th colspan="4">{{ race.title }}</th>
 
+      {% endfor %}
+    </tr>
+    <tr>
+      {% for race in races %}
+        <th class="empaty" scope="col"></th>
+        <th style="text-align: right;" scope="col">Время</th>
+        <th scope="col">Абсолютный зачет</th>
+        <th scope="col">Баллы</th>
+        <th style="text-align: left;" scope="col">Км</th>
+      {% endfor %}
+    </tr>
+  </thead>
 {% for person_id, races in main_dict.items() %}
     <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ races.person_surname }} {{ races.person_name }}</td>
+        <td style="text-align: left;">{{ loop.index }}</td>
+        <td style="text-align: left;">{{ races.person_surname }} {{ races.person_name }}</td>
         <td>{{ races.sum_scores }}</td>
         <td>{{ races.sum_distance }}</td>
         <td>{{ races.count_res_pers }}</td>
         {% for result in races.result_person %}
-            <td> | </td>
-            <td>{{ result.result_person.result_time }}</td>
-            <td>{{ result.result_person.result_place }}</td>
-            <td>{{ result.result_person.scores }}</td>
-            <td>{{ result.result_person.distance }}</td>
-            <td> | </td>
+          <td class="empaty"></td>
+          <td>{{ result.result_person.result_time }}</td>
+          <td>{{ result.result_person.result_place }}</td>
+          <td>{{ result.result_person.place_scores }}</td>
+          <td>{{ result.result_person.distance }}</td>
         {% endfor %}
     </tr>
 {% endfor %}

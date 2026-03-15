@@ -81,14 +81,15 @@ def parce_csv(path_csv, run_id):
 
 def group(request, group_id: int):
     """Получение результата по группе"""
-    races = Run.objects.filter(is_published=True)
+    races = Run.objects.filter(is_published=True).order_by('data_run')
     main_dict = {}
     result_person = {}
     sum_scores = {}
     sum_distance = {}
-    for run in races:
+    sum_race = {}
+    for index, run in enumerate(races): # Текущий забег
         res = get_result(group_id, run.id)
-        for person_id in res.keys():
+        for person_id in res.keys(): # Добавление участников
             if person_id in result_person:
                 result_person[person_id].append(res[person_id][0])
                 calculated_scores = (
@@ -97,14 +98,27 @@ def group(request, group_id: int):
                 )
                 sum_scores[person_id] += calculated_scores
                 sum_distance[person_id] += res[person_id][0]['result_person'].distance
+                sum_race[person_id] += 1
             else:
-                result_person[person_id] = res[person_id]
+                if index != 0: # Участник включается в кубок не с первого события
+                    result_person[person_id] = [
+                        {'result_person': Result.objects.none()} for _ in range(index)
+                    ]
+                    result_person[person_id].append(res[person_id][0])
+                else:
+                    result_person[person_id] = res[person_id]
                 calculated_scores = (
                     res[person_id][0]['result_person'].place_scores +
                     res[person_id][0]['result_person'].distance
                 )
                 sum_scores[person_id] = calculated_scores
-                sum_distance[person_id] = res[person_id][0]['result_person'].distance
+                sum_distance[person_id] = res[person_id][0][
+                    'result_person'].distance
+                sum_race[person_id] = 1
+        if index != 0: # проверка отсутствия участника на забеге
+            person_pass = set(result_person.keys()) - set(res.keys())
+            for person_id in person_pass:
+                result_person[person_id].append({'result_person': Result.objects.none()})
     if result_person.keys() == sum_scores.keys() == sum_distance.keys():
         for person_id in result_person.keys():
             person = Person.objects.get(id=person_id)
@@ -112,7 +126,7 @@ def group(request, group_id: int):
                 'person_name': person.name,
                 'person_surname': person.surname,
                 'result_person': result_person[person_id],
-                'count_res_pers': len(result_person[person_id]),
+                'count_res_pers': sum_race[person_id],
                 'sum_scores': sum_scores[person_id],
                 'sum_distance': sum_distance[person_id]
             }

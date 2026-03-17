@@ -5,10 +5,7 @@ from django.conf import settings
 from jinja2 import Environment, FileSystemLoader
 
 from .models import Result, Person, Run, Season, Group
-from .module import (
-    NAME, YEAR, RES_TIME, RES_PLACE, DISTANCE, GENDER, read_csv, converter_time,
-    get_result, defining_group, sort_result
-)
+from .module import get_result, sort_result, parce_csv, counting_scores
 from .forms import LoadCsvForm
 
 
@@ -38,46 +35,12 @@ def load_csv(request):
                 print('load')
             else:
                 print(switch)
-
     else:
         form = LoadCsvForm()
     context = {
         'form': form
     }
     return render(request, template_name='load_csv.html', context=context)
-
-
-def parce_csv(path_csv, run_id):
-    """Берет строчку файла и записывает ее в БД."""
-    try:
-        file_csv = read_csv(path_csv)
-        run = Run.objects.get(id=run_id)
-        for line in file_csv:
-            fi = line[NAME].split()
-            person, _ = Person.objects.get_or_create(
-                surname = fi[0],
-                name = fi[1],
-                gender = line[GENDER],
-                birthday = f'{line[YEAR]}-01-01'
-            )
-            group_obj = defining_group(
-                    gender=line[GENDER],
-                    birthday=f'{line[YEAR]}-01-01',
-                    season=run.season.id
-            )
-            if not group_obj:
-                continue
-            Result.objects.create(
-                run = run,
-                person = person,
-                result_place = line[RES_PLACE],
-                result_time = converter_time(line[RES_TIME]),
-                distance = line[DISTANCE],
-                group = group_obj
-            )
-        return True
-    except Exception as err:
-        return err
 
 def group(request, group_id: int):
     """Получение результата по группе"""
@@ -93,10 +56,9 @@ def group(request, group_id: int):
             if person_id in result_person:
                 result_person[person_id].append(res[person_id][0])
                 calculated_scores = (
-                    res[person_id][0]['result_person'].place_scores +
-                    res[person_id][0]['result_person'].distance
+                    res[person_id][0]['result_person'].place_scores
                 )
-                sum_scores[person_id] += calculated_scores
+                sum_scores[person_id].append(calculated_scores)
                 sum_distance[person_id] += res[person_id][0]['result_person'].distance
                 sum_race[person_id] += 1
             else:
@@ -108,17 +70,18 @@ def group(request, group_id: int):
                 else:
                     result_person[person_id] = res[person_id]
                 calculated_scores = (
-                    res[person_id][0]['result_person'].place_scores +
-                    res[person_id][0]['result_person'].distance
+                    res[person_id][0]['result_person'].place_scores
                 )
-                sum_scores[person_id] = calculated_scores
+                sum_scores[person_id] = [calculated_scores]
                 sum_distance[person_id] = res[person_id][0][
                     'result_person'].distance
                 sum_race[person_id] = 1
         if index != 0: # проверка отсутствия участника на забеге
             person_pass = set(result_person.keys()) - set(res.keys())
             for person_id in person_pass:
-                result_person[person_id].append({'result_person': Result.objects.none()})
+                result_person[person_id].append(
+                    {'result_person': Result.objects.none()}
+                )
     if result_person.keys() == sum_scores.keys() == sum_distance.keys():
         for person_id in result_person.keys():
             person = Person.objects.get(id=person_id)
@@ -127,7 +90,7 @@ def group(request, group_id: int):
                 'person_surname': person.surname,
                 'result_person': result_person[person_id],
                 'count_res_pers': sum_race[person_id],
-                'sum_scores': sum_scores[person_id],
+                'sum_scores': counting_scores(sum_scores[person_id], settings.SCORING_STAGES),
                 'sum_distance': sum_distance[person_id]
             }
     else:
@@ -153,7 +116,6 @@ def index(request):
     return render(
         request, context={'seasons': seasons}, template_name='index.html'
     )
-
 
 def choice(request, season:int):
     """Выбор группы по сезону."""

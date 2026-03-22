@@ -24,6 +24,7 @@ class Person(models.Model):
 class TitleGroup(models.Model):
     """Заголовки групп."""
     title = models.CharField(max_length=20)
+    name_file_html = models.CharField(max_length=20)
 
 
 class Group(models.Model):

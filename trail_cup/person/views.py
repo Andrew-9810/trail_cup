@@ -25,7 +25,7 @@ def load_csv(request):
         }
         form = LoadCsvForm(request.POST, file_data)
         if form.is_valid():
-            path_file = f'{settings.MEDIA_ROOT}\\{form.cleaned_data["file"].name}'
+            path_file = f'{settings.MEDIA_ROOT}\\{form.cleaned_data["file"].name}\\load_csv'
             run_id = form.cleaned_data['run']
             with open(path_file, 'w', newline='') as f:
                 myfile = File(f)
@@ -104,7 +104,9 @@ def group(request, group_id: int):
         'main_dict': main_dict, 'races': races
     }
     template_name = environment.get_template('result.html')
-    results_filename = f'{path_templates}\\my_file.html'
+    group_name = Group.objects.get(id=group_id).title.name_file_html
+
+    results_filename = f'{settings.MEDIA_ROOT}\\data_html\\{group_name}.html'
     with open(results_filename, mode="w", encoding="utf-8") as results:
         results.write(template_name.render(context))
 

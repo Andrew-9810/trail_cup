@@ -6,3 +6,4 @@ MarkupSafe==2.1.5
 pytz==2025.2
 sqlparse==0.5.5
 typing-extensions==4.13.2
+celery==5.5.3

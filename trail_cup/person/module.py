@@ -5,10 +5,8 @@ from jinja2 import Environment, FileSystemLoader
 
 from person.models import Result, Person, Group, Run
 
-path_templates = f'{settings.BASE_DIR}\\person\\templates\\'
-environment = Environment(loader=FileSystemLoader(
-    path_templates
-))
+path_templates = settings.BASE_DIR / 'person' / 'templates'
+environment = Environment(loader=FileSystemLoader(path_templates))
 
 NAME = 0
 YEAR = 1
@@ -202,6 +200,11 @@ def create_file_html(group_id:int):
     template_name = environment.get_template('result.html')
     group_name = Group.objects.get(id=group_id).title.name_file_html
 
-    results_filename = f'{settings.MEDIA_ROOT}\\data_html\\{group_name}.html'
-    with open(results_filename, mode="w", encoding="utf-8") as results:
+    results_filename = settings.MEDIA_ROOT / 'data_html'
+    if not results_filename.exists():
+        results_filename.mkdir(parents=True)
+
+    with open(
+        results_filename / f'{group_name}.html', mode="w", encoding="utf-8"
+    ) as results:
         results.write(template_name.render(context))

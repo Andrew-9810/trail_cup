@@ -19,9 +19,13 @@ def load_csv(request):
         }
         form = LoadCsvForm(request.POST, file_data)
         if form.is_valid():
-            path_file = f'{settings.MEDIA_ROOT}\\{form.cleaned_data["file"].name}\\load_csv'
+            path_file = settings.MEDIA_ROOT / 'load_csv'
+            if not path_file.exists():
+                path_file.mkdir(parents=True)
             run_id = form.cleaned_data['run']
-            with open(path_file, 'w', newline='') as f:
+            with open(
+                path_file / f'{form.cleaned_data["file"].name}', 'w', newline=''
+            ) as f:
                 myfile = File(f)
                 myfile.write(form.cleaned_data['file'].read().decode('cp1251'))
             switch = parce_csv(path_file, run_id)

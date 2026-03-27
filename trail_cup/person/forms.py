@@ -1,4 +1,3 @@
-from Tools.scripts.generate_token import update_file
 from django import forms
 
 from .models import Run

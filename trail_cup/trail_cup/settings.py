@@ -125,14 +125,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SCORING_STAGES = 15 # лучших этапов в зачет
 
+
 # REDIS related settings
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
+REDIS_PASS = ''
+REDIS_USER = ''
 
 # CELERY related settings
-CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_URL = (
+    'redis://'
+    + REDIS_USER + ':' + REDIS_PASS + '@' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+)
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_RESULT_BACKEND = (
+    'redis://'
+    + REDIS_USER + ':' + REDIS_PASS + '@' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+)
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALAIZER = 'json'
 CELERY_RESULT_SERIALAIZER = 'json'

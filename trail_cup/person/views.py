@@ -6,7 +6,7 @@ from django.conf import settings
 from .models import Season, Group
 from .module import parce_csv, create_file_html
 from .forms import LoadCsvForm
-from .tasks import create_file_html
+from .tasks import t_create_file_html
 
 
 def load_csv(request):
@@ -42,7 +42,7 @@ def load_csv(request):
 
 def group(request, group_id: int):
     """Получение результата по группе"""
-    create_file_html.delay(group_id)
+    t_create_file_html.delay(group_id)
     return render(request, context={'mess': 'good'}, template_name='good.html')
 
 def index(request):

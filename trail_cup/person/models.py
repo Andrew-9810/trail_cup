@@ -3,10 +3,15 @@ from django.db import models
 
 class Season(models.Model):
     """Сезон забегов."""
-    title = models.IntegerField()
+    title = models.IntegerField(verbose_name='Год')
+
+
+    class Meta:
+        verbose_name = 'сезон'
+        verbose_name_plural = 'Сезоны'
 
     def __str__(self):
-        return str(self.title)
+        return f'{self.title}'
 
 
 class Person(models.Model):
@@ -15,34 +20,78 @@ class Person(models.Model):
     WOMAN = 'D'
     GENDER_CHOICES = [(MAN, 'M'), (WOMAN, 'Ж')]
 
-    surname = models.CharField(max_length=30)
-    name = models.CharField(max_length=30)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MAN)
-    birthday = models.DateField()
+    surname = models.CharField(verbose_name='Фамилия', max_length=30)
+    name = models.CharField(verbose_name='Имя', max_length=30)
+    gender = models.CharField(
+        verbose_name='Пол', max_length=1, choices=GENDER_CHOICES, default=MAN
+    )
+    birthday = models.DateField(verbose_name='День рождения')
+
+
+    class Meta:
+        verbose_name = 'участник'
+        verbose_name_plural = 'Участники'
+
+    def __str__(self):
+        return f'{self.surname} {self.name} {self.birthday}'
 
 
 class TitleGroup(models.Model):
     """Заголовки групп."""
-    title = models.CharField(max_length=20)
-    name_file_html = models.CharField(max_length=20)
+    title = models.CharField(verbose_name='Название', max_length=20)
+    name_file_html = models.CharField(
+        verbose_name='Имя для файла html', max_length=20
+    )
 
+
+    class Meta:
+        verbose_name = 'заголовок'
+        verbose_name_plural = 'Заголовки групп'
+
+    def __str__(self):
+        return f'{self.title}'
 
 class Group(models.Model):
     """Группы участников."""
     MAN = 'M'
     WOMAN = 'D'
     GENDER_CHOICES = [(MAN, 'M'), (WOMAN, 'Ж')]
-    season = models.ForeignKey(Season, on_delete=models.PROTECT, default=1900)
-    title = models.ForeignKey(TitleGroup, on_delete=models.PROTECT)
-    year_max = models.DateField()
-    year_min = models.DateField()
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default=MAN)
+    season = models.ForeignKey(
+        Season, verbose_name='Сезон', on_delete=models.PROTECT, default=1900
+    )
+    title = models.ForeignKey(
+        TitleGroup, verbose_name='Заголовок', on_delete=models.PROTECT
+    )
+    year_min = models.DateField(verbose_name='Год рождения от')
+    year_max = models.DateField(verbose_name='Год рождения до')
+    gender = models.CharField(
+        verbose_name='Пол', max_length=1, choices=GENDER_CHOICES, default=MAN
+    )
+
+
+    class Meta:
+        verbose_name = 'группа'
+        verbose_name_plural = 'Группы участников'
+
+    def __str__(self):
+        return f'{self.season} {self.title}'
+
 
 class Scores(models.Model):
     """Очки за результат."""
-    season = models.ForeignKey(Season, on_delete=models.PROTECT, default=1900)
-    result_place = models.IntegerField()
-    scores = models.FloatField()
+    season = models.ForeignKey(
+        Season, verbose_name='Сезон', on_delete=models.PROTECT, default=1900
+    )
+    result_place = models.IntegerField(verbose_name='Занятое место')
+    scores = models.FloatField(verbose_name='Очки')
+
+
+    class Meta:
+        verbose_name = 'очки'
+        verbose_name_plural = 'Очки'
+
+    def __str__(self):
+        return f'{self.season} {self.result_place} {self.scores}'
 
 
 class Run(models.Model):
@@ -50,25 +99,47 @@ class Run(models.Model):
     DAY = 'D'
     NIGHT = 'N'
     TYPE_CHOICES = [(DAY, 'День'), (NIGHT, 'Ночь')]
-    season = models.ForeignKey(Season, on_delete=models.PROTECT, default=1900)
-    title = models.CharField(max_length=40)
-    type_run = models.CharField(
-        max_length=4, choices=TYPE_CHOICES, default=DAY
+    season = models.ForeignKey(
+        Season, verbose_name='Сезон', on_delete=models.PROTECT, default=1900
     )
-    data_run = models.DateField()
+    title = models.CharField(verbose_name='Заголовок', max_length=40)
+    type_run = models.CharField(
+        verbose_name='Тип', max_length=4, choices=TYPE_CHOICES, default=DAY
+    )
+    data_run = models.DateField(verbose_name='Дата')
     is_published = models.BooleanField(
         verbose_name='Опубликовано', default=False
     )
 
 
+    class Meta:
+        verbose_name = 'забег'
+        verbose_name_plural = 'Забеги'
+
+    def __str__(self):
+        return f'{self.data_run} {self.title}'
+
+
 class Result(models.Model):
     """Результаты трейла."""
-    run = models.ForeignKey(Run, on_delete=models.PROTECT)
-    person = models.ForeignKey(Person, on_delete=models.PROTECT)
-    result_place = models.IntegerField()
-    result_time = models.IntegerField(verbose_name='Время забега')
-    distance = models.FloatField()
-    group = models.ForeignKey(Group, on_delete=models.PROTECT, default=1)
+    run = models.ForeignKey(Run, verbose_name='Забег', on_delete=models.PROTECT)
+    person = models.ForeignKey(
+        Person, verbose_name='Участник', on_delete=models.PROTECT
+    )
+    result_place = models.IntegerField(verbose_name='Место')
+    result_time = models.IntegerField(verbose_name='Время')
+    distance = models.FloatField(verbose_name='Дистанция')
+    group = models.ForeignKey(
+        Group, verbose_name='Группа', on_delete=models.PROTECT, default=1
+    )
+
+
+    class Meta:
+        verbose_name = 'результат'
+        verbose_name_plural = 'Результаты'
+
+    def __str__(self):
+        return f'{self.run} {self.person}'
 
     def get_scores(self):
         """Получение очков по занятому месту."""

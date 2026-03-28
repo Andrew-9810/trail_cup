@@ -33,14 +33,18 @@ class Person(models.Model):
         verbose_name_plural = 'Участники'
 
     def __str__(self):
-        return f'{self.surname} {self.name} {self.birthday}'
+        return f'{self.surname} {self.name} {self.birthday} | {self.pk} '
 
 
 class TitleGroup(models.Model):
     """Заголовки групп."""
     title = models.CharField(verbose_name='Название', max_length=20)
     name_file_html = models.CharField(
-        verbose_name='Имя для файла html', max_length=20
+        verbose_name='Имя для файла html', max_length=20,
+        help_text=(
+            'Используется в /media/data_html;'
+            ' Имя должно быть латиницей без пробелов'
+        )
     )
 
 
@@ -62,8 +66,14 @@ class Group(models.Model):
     title = models.ForeignKey(
         TitleGroup, verbose_name='Заголовок', on_delete=models.PROTECT
     )
-    year_min = models.DateField(verbose_name='Год рождения от')
-    year_max = models.DateField(verbose_name='Год рождения до')
+    year_min = models.DateField(
+        verbose_name='Год рождения от',
+        help_text='Младшая граница возраста (в 2025 г для групп 14-17 лет 2011)'
+    )
+    year_max = models.DateField(
+        verbose_name='Год рождения до',
+        help_text='Старшая граница возраста (в 2025 г для групп 14-17 лет 2008)'
+    )
     gender = models.CharField(
         verbose_name='Пол', max_length=1, choices=GENDER_CHOICES, default=MAN
     )

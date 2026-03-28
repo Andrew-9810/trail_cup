@@ -1,6 +1,8 @@
 import os.path
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4kqpw!p_en)t0zidc*y*8=8d!=3g9^zdzizl66ucizwqm%)ej&'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,10 +129,10 @@ SCORING_STAGES = 15 # лучших этапов в зачет
 
 
 # REDIS related settings
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = '6379'
-REDIS_PASS = ''
-REDIS_USER = ''
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
+REDIS_PASS = os.getenv('REDIS_PASS')
+REDIS_USER = os.getenv('REDIS_USER')
 
 # CELERY related settings
 CELERY_BROKER_URL = (

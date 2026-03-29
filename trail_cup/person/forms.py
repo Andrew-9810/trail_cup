@@ -7,7 +7,7 @@ class LoadCsvForm(forms.Form):
     run_obj = Run.objects.values()
     choices = []
     for i in run_obj:
-        value =(i['id'], i['title'],)
+        value = (i['id'], f'{i["data_run"]} {i["title"]}',)
         choices.append(value)
 
     run = forms.ChoiceField(choices=choices)

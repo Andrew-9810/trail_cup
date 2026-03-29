@@ -5,8 +5,20 @@
     <title>Title</title>
 </head>
 <body>
-  {% for group in groups %}
-     <p><a href="{% url 'group_result' group.id %}">{{ group.title.title }}</a></p>
-  {% endfor %}
+<table border="1">
+  <thead>
+  <tr>
+    <th>Выбрать группу для формирования файла:</th>
+  </tr>
+  </thead>
+    {% for group in groups %}
+      <tr>
+        <td>
+          <a href="{% url 'group_result' group.id %}">{{ group.title.title }}</a>
+        </td>
+      </tr>
+    {% endfor %}
+</table>
+
 </body>
 </html>

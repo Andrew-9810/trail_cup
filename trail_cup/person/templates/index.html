@@ -2,12 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Формирование html группы</title>
 </head>
 <body>
-{% for season in seasons %}
-  <a href="{% url 'choice' season.id %}">{{ season }}</a>
-{% endfor %}
-
+<a href="{% url 'load_csv' %}">Загрузить результат .csv</a>
+<br><br>
+<table border="1">
+  <thead>
+  <tr>
+    <th>Выбрать сезон:</th>
+  </tr>
+  </thead>
+    {% for season in seasons %}
+      <tr>
+        <td>
+          <a href="{% url 'choice' season.id %}">{{ season }}</a>
+        </td>
+      </tr>
+    {% endfor %}
+</table>
 </body>
 </html>

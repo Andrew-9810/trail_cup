@@ -8,5 +8,5 @@ urlpatterns = [
     path('', index),
     path('choice/<int:season>/', choice, name='choice'),
     path('group_result/<int:group_id>/', group, name='group_result'),
-    path('load_csv/', load_csv),
+    path('load_csv/', load_csv, name='load_csv'),
 ]

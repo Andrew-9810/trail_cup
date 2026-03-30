@@ -2,6 +2,8 @@ from django.urls import path
 
 from .views import index, group, load_csv,  choice
 
+app_name = 'person'
+
 urlpatterns = [
     # Если вызван URL без относительного адреса (шаблон — пустые кавычки),
     # то вызывается view-функция index() из файла views.py

@@ -14,7 +14,7 @@
     {% for group in groups %}
       <tr>
         <td>
-          <a href="{% url 'group_result' group.id %}">{{ group.title.title }}</a>
+          <a href="{% url 'person:group_result' group.id %}">{{ group.title.title }}</a>
         </td>
       </tr>
     {% endfor %}

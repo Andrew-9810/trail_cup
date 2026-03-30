@@ -5,7 +5,7 @@
     <title>Формирование html группы</title>
 </head>
 <body>
-<a href="{% url 'load_csv' %}">Загрузить результат .csv</a>
+<a href="{% url 'person:load_csv' %}">Загрузить результат .csv</a>
 <br><br>
 <table border="1">
   <thead>
@@ -16,7 +16,7 @@
     {% for season in seasons %}
       <tr>
         <td>
-          <a href="{% url 'choice' season.id %}">{{ season }}</a>
+          <a href="{% url 'person:choice' season.id %}">{{ season }}</a>
         </td>
       </tr>
     {% endfor %}

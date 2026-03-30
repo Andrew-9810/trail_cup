@@ -22,8 +22,8 @@ def read_csv(path):
         reader = csv.reader(csvfile, delimiter=';')
         for row in reader:
             data = [
-                row[NAME], row[YEAR], row[RES_TIME],
-                row[RES_PLACE], row[DISTANCE], row[GENDER]
+                row[NAME:int], row[YEAR:int], row[RES_TIME:int],
+                row[RES_PLACE:int], row[DISTANCE:int], row[GENDER:int]
             ]
             persons.append(data)
     return persons

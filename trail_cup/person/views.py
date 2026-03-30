@@ -1,3 +1,6 @@
+import logging
+from logging import basicConfig
+
 from django.shortcuts import render
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.files import File
@@ -7,6 +10,12 @@ from .models import Season, Group
 from .module import parce_csv, create_file_html
 from .forms import LoadCsvForm
 from .tasks import t_create_file_html
+
+
+basicConfig(
+    level=logging.INFO, filename= "log.log",
+    format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s"
+)
 
 
 def load_csv(request):
@@ -19,19 +28,21 @@ def load_csv(request):
         }
         form = LoadCsvForm(request.POST, file_data)
         if form.is_valid():
-            path_file = settings.MEDIA_ROOT / 'load_csv'
-            if not path_file.exists():
-                path_file.mkdir(parents=True)
+            path_media = settings.MEDIA_ROOT / 'load_csv'
+            if not path_media.exists():
+                path_media.mkdir(parents=True)
             run_id = form.cleaned_data['run']
+
             with open(
-                path_file / f'{form.cleaned_data["file"].name}', 'w', newline=''
+                path_media / f'{form.cleaned_data["file"].name}', 'w', newline=''
             ) as f:
                 myfile = File(f)
                 myfile.write(form.cleaned_data['file'].read().decode('cp1251'))
-            switch = parce_csv(path_file, run_id)
+
+                switch = parce_csv(
+                    path_media / f'{form.cleaned_data["file"].name}', run_id
+                )
             if switch:
-                print('load')
-            else:
                 print(switch)
     else:
         form = LoadCsvForm()

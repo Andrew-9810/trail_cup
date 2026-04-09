@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from import_export.admin import ImportExportActionModelAdmin
+
 from .models import Season, Scores, Run, Result, Person, Group, TitleGroup
 
 LIST_PER_PAGE = 15 # Элементов на листе при пагинации
@@ -30,7 +32,7 @@ class GroupAdmin(admin.ModelAdmin):
     list_per_page = LIST_PER_PAGE
 
 
-class RunAdmin(admin.ModelAdmin):
+class RunAdmin(ImportExportActionModelAdmin):
     list_display = (
         'season',
         'title',
@@ -48,7 +50,7 @@ class RunAdmin(admin.ModelAdmin):
     list_per_page = LIST_PER_PAGE
 
 
-class ScoresAdmin(admin.ModelAdmin):
+class ScoresAdmin(ImportExportActionModelAdmin):
     list_display = (
         'season',
         'result_place',

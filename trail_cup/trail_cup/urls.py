@@ -16,8 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+admin.site.site_title = "Trail_cup site admin (DEV)"
+admin.site.site_header = "Trail_cup administration"
+admin.site.index_title = "Site administration"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api_v1/', include('api_v1.urls'), namespace='api_v1'),
-    path('', include('person.urls'), namespace='person'),
+    # path('api_v1/', include('api_v1.urls'), namespace='api_v1'),
+    path('', include('person.urls', namespace='person')),
 ]

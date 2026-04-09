@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api_v1.apps.ApiV1Config',
     'rest_framework',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 

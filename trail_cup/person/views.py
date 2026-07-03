@@ -37,11 +37,11 @@ def load_csv(request):
                 path_media / f'{form.cleaned_data["file"].name}', 'w', newline=''
             ) as f:
                 myfile = File(f)
-                myfile.write(form.cleaned_data['file'].read().decode('cp1251'))
+                myfile.write(form.cleaned_data['file'].read().decode('utf-8'))
 
-                switch = parce_csv(
-                    path_media / f'{form.cleaned_data["file"].name}', run_id
-                )
+            switch = parce_csv(
+                path_media / f'{form.cleaned_data["file"].name}', run_id
+            )
             if switch:
                 print(switch)
     else:

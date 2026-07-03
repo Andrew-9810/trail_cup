@@ -18,15 +18,22 @@ GENDER = 5
 def read_csv(path):
     """Получает путь к файлу csv отдает считанный в переменную файл."""
     persons = []
-    with open(path, newline='', encoding='cp1251') as csvfile:
-        reader = csv.reader(csvfile, delimiter=';')
-        for row in reader:
-            data = [
-                row[NAME:int], row[YEAR:int], row[RES_TIME:int],
-                row[RES_PLACE:int], row[DISTANCE:int], row[GENDER:int]
-            ]
-            persons.append(data)
-    return persons
+    try:
+        with open(path, newline='', encoding='utf-8', mode='r') as csvfile:
+            reader = csv.reader(csvfile, delimiter=';')
+            for row in reader:
+                # В файле могут быть лишние поля
+                data = [
+                    row[NAME], row[YEAR], row[RES_TIME],
+                    row[RES_PLACE], row[DISTANCE], row[GENDER]
+                ]
+                persons.append(data)
+    except Exception as err:
+        print(f'err -> {err}')
+    if len(persons) != 0:
+        return persons
+    else:
+        return False
 
 def add_simbol_zero(arg):
     """Добавляет ноль в начало строки если в строке один символ."""
@@ -100,6 +107,8 @@ def parce_csv(path_csv, run_id):
     """Берет строчку файла и записывает ее в БД."""
     try:
         file_csv = read_csv(path_csv)
+        if not file_csv:
+            raise ValueError('Не могу прочитать файл')
         run = Run.objects.get(id=run_id)
         for line in file_csv:
             fi = line[NAME].split()
@@ -115,6 +124,7 @@ def parce_csv(path_csv, run_id):
                     season=run.season.id
             )
             if not group_obj:
+                print(f'Не могу определить группу у {fi[0]} {fi[1]}')
                 continue
             Result.objects.create(
                 run = run,

@@ -19,11 +19,6 @@ caption {
   font-weight: bold;
 }
 
-thead,
-tfoot {
-  background-color: rgb(228 240 245);
-}
-
 th,
 td {
   border: 1px solid rgb(160 160 160);
@@ -47,46 +42,77 @@ tfoot td {
 }
 .empaty {
   background-color: rgb(0 0 0);
-
+}
+.type_night {
+  background-color: rgb(119,221,231);
+}
+.type_day {
+  background-color: rgb(250,235,215);
+}
+.men-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.women-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f19cbb;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
 }
 
     </style>
 </head>
 <body>
-<a href="men1829.html">МУЖЧИНЫ 18-29 лет</a> |
-<a href="women1829.html">ЖЕНЩИНЫ 18-29 лет</a> |
-<a href="men3039.html">МУЖЧИНЫ 30-39 лет</a> |
-<a href="women3039.html">ЖЕНЩИНЫ 30-39 лет</a> |
-<a href="men4049.html">МУЖЧИНЫ 40-49 лет</a> |
-<a href="women4049.html">ЖЕНЩИНЫ 40-49 лет</a> |
-<a href="men5059.html">МУЖЧИНЫ 50-59 лет</a> |
-<a href="women5059.html">ЖЕНЩИНЫ 50-59 лет</a> |
-<a href="men60.html">МУЖЧИНЫ 60+ лет</a> |
-<a href="women60.html">ЖЕНЩИНЫ 60+ лет</a> |
-<a href="men1417.html">ЮНИОРЫ 14-17 лет</a> |
-<a href="women1417.html">ЮНИОРКИ 14-17 лет</a>
+<a class="men-button" href="men1829.html">МУЖЧИНЫ 18-29 лет</a>
+<a class="women-button" href="women1829.html">ЖЕНЩИНЫ 18-29 лет</a>
+<a class="men-button" href="men3039.html">МУЖЧИНЫ 30-39 лет</a>
+<a class="women-button" href="women3039.html">ЖЕНЩИНЫ 30-39 лет</a>
+<a class="men-button" href="men4049.html">МУЖЧИНЫ 40-49 лет</a>
+<a class="women-button" href="women4049.html">ЖЕНЩИНЫ 40-49 лет</a>
+<a class="men-button" href="men5059.html">МУЖЧИНЫ 50-59 лет</a>
+<a class="women-button" href="women5059.html">ЖЕНЩИНЫ 50-59 лет</a>
+<a class="men-button" href="men60.html">МУЖЧИНЫ 60+ лет</a>
+<a class="women-button" href="women60.html">ЖЕНЩИНЫ 60+ лет</a>
+<a class="men-button" href="men1417.html">ЮНИОРЫ 14-17 лет</a>
+<a class="women-button" href="women1417.html">ЮНИОРКИ 14-17 лет</a>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: left;" rowspan="2">Место</th>
-      <th style="text-align: left;" rowspan="2">Фамилия Имя</th>
-      <th rowspan="2">Общее количество баллов</th>
-      <th rowspan="2">Общее количество пройденных км</th>
-      <th rowspan="2">Количество пройденных этапов</th>
+      <th class="type_day" style="text-align: left;" rowspan="2">Место</th>
+      <th class="type_day" style="text-align: left;" rowspan="2">Фамилия Имя</th>
+      <th class="type_day" rowspan="2">Общее количество баллов</th>
+      <th class="type_day" rowspan="2">Общее количество пройденных км</th>
+      <th class="type_day" rowspan="2">Количество пройденных этапов</th>
       {% for race in races %}
         <th class="empaty" scope="col"></th>
-        <th colspan="4">{{ race.title }}</th>
-
+        {% if race.type_run == "D" %}
+            <th class="type_day" colspan="4">{{ race.title }}<br>{{ race.data_run }}</th>
+        {% else %}
+            <th class="type_night" colspan="4">{{ race.title }}<br>{{ race.data_run }}</th>
+        {% endif %}
       {% endfor %}
     </tr>
     <tr>
       {% for race in races %}
         <th class="empaty" scope="col"></th>
-        <th style="text-align: right;" scope="col">Время</th>
-        <th scope="col">Абсолютный зачет</th>
-        <th scope="col">Баллы</th>
-        <th style="text-align: left;" scope="col">Км</th>
+        {% if race.type_run == "D" %}
+          <th class="type_day" style="text-align: right;" scope="col">Время</th>
+          <th class="type_day" scope="col">Абсолютный зачет</th>
+          <th class="type_day" scope="col">Баллы</th>
+          <th class="type_day" style="text-align: left;" scope="col">Км</th>
+        {% else %}
+          <th class="type_night" style="text-align: right;" scope="col">Время</th>
+          <th class="type_night" scope="col">Абсолютный зачет</th>
+          <th class="type_night" scope="col">Баллы</th>
+          <th class="type_night" style="text-align: left;" scope="col">Км</th>
+        {% endif %}
       {% endfor %}
     </tr>
   </thead>
@@ -99,10 +125,23 @@ tfoot td {
         <td>{{ races.count_res_pers }}</td>
         {% for result in races.result_person %}
           <td class="empaty"></td>
-          <td>{{ result.result_person.result_time }}</td>
-          <td>{{ result.result_person.result_place }}</td>
-          <td>{{ result.result_person.place_scores }}</td>
-          <td>{{ result.result_person.distance }}</td>
+          {% if result.result_person.type_run == "D" %}
+            <td class="type_day">{{ result.result_person.result_time }}</td>
+            <td class="type_day">{{ result.result_person.result_place }}</td>
+            <td class="type_day">{{ result.result_person.place_scores }}</td>
+            <td class="type_day">{{ result.result_person.distance }}</td>
+          {% elif result.result_person.type_run == "N" %}
+            <td class="type_night">{{ result.result_person.result_time }}</td>
+            <td class="type_night">{{ result.result_person.result_place }}</td>
+            <td class="type_night">{{ result.result_person.place_scores }}</td>
+            <td class="type_night">{{ result.result_person.distance }}</td>
+          {% else %}
+            <td>{{ result.result_person.result_time }}</td>
+            <td>{{ result.result_person.result_place }}</td>
+            <td>{{ result.result_person.place_scores }}</td>
+            <td>{{ result.result_person.distance }}</td>
+          {% endif %}
+
         {% endfor %}
     </tr>
 {% endfor %}

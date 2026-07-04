@@ -161,3 +161,8 @@ class Result(models.Model):
             self.place_scores = scores[0].scores + self.distance
         else:
             self.place_scores = self.distance
+
+    def get_type_run(self):
+        """Получение типа гонки (день, ночь)."""
+        self.type_run = self.run.type_run
+

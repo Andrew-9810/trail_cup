@@ -76,6 +76,7 @@ def get_result(group:int, run:int):
         res_time = converter_time(res.result_time)
         res.result_time = res_time
         res.get_scores()
+        res.get_type_run()
         person_result[res.person_id] = [{'result_person': res}]
     return person_result
 

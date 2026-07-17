@@ -35,15 +35,24 @@ def read_csv(path):
     else:
         return False
 
-def add_simbol_zero(arg):
-    """Добавляет ноль в начало строки если в строке один символ."""
-    data = str(arg)
-    if len(data) < 2:
-        return data.zfill(2)
-    elif len(data) == 2:
-        return data
+def format_time(time_str):
+    """m:ss, mm:ss, hh:mm:ss -> hh:mm:ss"""
+    parts = time_str.split(':')
+
+    if len(parts) == 3:
+        hours, minutes, seconds = parts
+    elif len(parts) == 2:
+        minutes, seconds = parts
+        hours = '00'
     else:
-        raise ValueError("Получил число больше 2х символов")
+        raise ValueError(
+            "Неверный формат времени. Ожидается чч:мм:сс, мм:сс или м:сс.")
+
+    hours = str(int(hours)).zfill(2)
+    minutes = str(int(minutes)).zfill(2)
+    seconds = str(int(seconds)).zfill(2)
+
+    return hours, minutes, seconds
 
 
 def converter_time(arg):
@@ -51,8 +60,8 @@ def converter_time(arg):
     hour_sec = 60 * 60
     minute_sec = 60
     if isinstance(arg, str):
-        hour, minute, second = arg.split(':')
-        result = int(hour) * hour_sec + int(minute) * minute_sec + int(second)
+        hour, minute, second = format_time(arg)
+        return int(hour) * hour_sec + int(minute) * minute_sec + int(second)
     elif isinstance(arg, int):
         hour = arg // hour_sec
         remaining_minutes = arg - hour * hour_sec
@@ -60,11 +69,10 @@ def converter_time(arg):
         remaining_seconds = remaining_minutes - minute * minute_sec
         res = list()
         for i in [hour, minute, remaining_seconds]:
-            res.append(add_simbol_zero(i))
-        result = f'{res[0]}:{res[1]}:{res[2]}'
+            res.append(str(i).zfill(2))
+        return f'{res[0]}:{res[1]}:{res[2]}'
     else:
         raise ValueError("Должен получить либо строку либо число!")
-    return result
 
 def get_result(group:int, run:int):
     """Возвращает объект результата участников по группе."""

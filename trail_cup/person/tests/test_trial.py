@@ -1,5 +1,7 @@
 from django.test import TestCase
-from person.module import converter_time, add_simbol_zero, get_result
+from person.module import (
+    converter_time, get_result, format_time
+)
 from person.models import Season, Run, Result, Person, Group, TitleGroup
 
 
@@ -22,15 +24,17 @@ class FuncTest(TestCase):
             answer = i[1]
             self.assertEqual(result, answer)
 
-    def test_add_simbol_zero(self):
-        """Тестирование функции добавления нуля."""
+    def test_format_time(self):
+        """Тестирование функции конвертации даты в формат hh:mm:ss."""
         data = (
-            (0, '00'), (33, '33')
+            (('01', '35', '17'), '01:35:17'),
+            (('00', '35', '17'), '00:35:17'),
+            (('00', '35', '17'), '35:17'),
+            (('00', '05', '17'), '5:17'),
+            (('25', '35', '17'), '25:35:17')
         )
         for i in data:
-            result = add_simbol_zero(i[0])
-            answer = i[1]
-            self.assertEqual(result, answer)
+            self.assertEqual(i[0], format_time(i[1]))
 
     def test_get_result(self):
         """Тестирование функции получения результата по группе."""
@@ -67,8 +71,7 @@ class FuncTest(TestCase):
             run=run, person=person, result_place=result_place,
             result_time=result_time, distance=distance, group=group
         )
-        x = get_result(group=1, run=[1])
-        print(x)
+        x = get_result(group=1, run=1)
         result = (f'{res.run.title}{res.person.surname}{res.result_place}'
                   f'{res.result_time}{res.distance}{res.group.year_max}')
         answer = (f'{title}{surname}{result_place}{result_time}{distance}'
